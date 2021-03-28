@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git url: 'https://github.com/alexandreponte2/validadorcpfjava.git', branch: 'main'
+                sh './mvnw package'
+                echo 'Building..'
+            }
+        }
+        stage('Docker image') {
+            steps {
+                sh "/usr/local/bin/docker build -t alexandre/validadorcpfjavagoku:1.0 -f Dockerfile ."
+                echo 'building docker image..'
+            }
+        }
+        stage('TDD') {
+            steps {
+                sh './mvnw test'    
+                echo 'Testing....'
+            }
+        }
+        stage('BDD') {
+            steps {
+                sh 'nohup ./start.sh &'
+                echo ' Starting....'
+                git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
+                sh './mvnw test'
+            }
+        }
+    }
+}
