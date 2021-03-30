@@ -39,6 +39,7 @@ pipeline {
         stage('K8s') {
             steps {
                 sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
+                git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
             }
         }
     }
