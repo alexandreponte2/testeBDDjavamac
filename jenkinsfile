@@ -1,5 +1,8 @@
 pipeline {
     agent any
+        triggers {
+        cron('* * * * *')
+    }
 
     stages {
         stage('Build') {
@@ -30,16 +33,34 @@ pipeline {
                 echo ' Starting....'
             }
         }
-        stage('BDD') {
-            steps {
-                git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
-                sh './mvnw test'
-            }
-        }
-        stage('K8s') {
+  //      stage('BDD') {
+    //        steps {
+      //          git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
+        //        sh './mvnw test'
+          //  }
+       // }
+        stage('K8s-DEV') {
             steps {
                 git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
                 sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
+                sh '/Users/alexandre.s.ponte/kubectl apply -f deployment-java-dev.yml'
+                sh '/Users/alexandre.s.ponte/kubectl apply -f nodeport-svc-java-dev.yml'
+            }
+        }
+        stage('K8s-QA') {
+            steps {
+                git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
+                sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
+                sh '/Users/alexandre.s.ponte/kubectl apply -f deployment-java-qa.yml'
+                sh '/Users/alexandre.s.ponte/kubectl apply -f nodeport-svc-java-qa.yml'
+            }
+        }
+        stage('K8s-PROD') {
+            steps {
+                git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
+                sh '/Users/alexandre.s.ponte/kubectl get nodes -o wide'
+                sh '/Users/alexandre.s.ponte/kubectl apply -f deployment-java-prod.yml'
+                sh '/Users/alexandre.s.ponte/kubectl apply -f nodeport-svc-java-prod.yml'
             }
         }
     }
