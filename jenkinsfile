@@ -6,7 +6,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
-                git url: 'https://github.com/alexandreponte2/validadorcpfjava.git', branch: 'main'
+                git url: 'https://github.com/heltonscampos/projeto-final-concrete.git', branch: 'main'
                 sh './mvnw package'
                 echo 'Building..'
             }
@@ -31,12 +31,12 @@ pipeline {
                 echo ' Starting....'
             }
         }
-  //      stage('BDD') {
-    //        steps {
-      //          git url: 'https://github.com/alexandreponte2/testeBDDjavamac.git', branch: 'main'
-        //        sh './mvnw test'
-          //  }
-       // }
+       stage('BDD') {
+           steps {
+               git url: 'https://github.com/heltonscampos/bdd-projeto-final-concrete.git', branch: 'main'
+               sh './mvnw test'
+           }
+       }
         stage('K8s-DEV') {
             steps {
                 git url: 'https://github.com/alexandreponte2/javapods.git', branch: 'main'
